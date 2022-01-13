@@ -2,27 +2,25 @@ package main.World;
 
 import org.joml.Vector3i;
 
+import java.util.HashMap;
+
 public class ChunkStorage {
-    public Chunk[][] chunks;
+    private final HashMap<Vector3i, Chunk> chunkHashMap;
 
     public ChunkStorage() {
-        chunks = new Chunk[12800][12800];
+        chunkHashMap = new HashMap<>();
     }
 
     public void storeChunk(Chunk chunk) {
-        int newX = chunk.position.x;
-        int newZ = chunk.position.z;
-
-        chunks[newX + chunks.length / 2][newZ + chunks.length / 2] =chunk;
-
+        chunkHashMap.put(chunk.position, chunk);
     }
 
     public Chunk getChunk(Vector3i position, boolean shouldGenerate) {
-        if (shouldGenerate && chunks[position.x + chunks.length /2][position.z + chunks.length /2] == null) {
-            storeChunk(new Chunk(new Vector3i(position.x, 0, position.z)));
+        if(shouldGenerate && chunkHashMap.get(position) == null){
+            chunkHashMap.put(position, new Chunk(position));
         }
 
-        return chunks[position.x + chunks.length /2][position.z + chunks.length /2];
+        return chunkHashMap.get(position);
     }
 
     public Chunk getChunk(int x, int z, boolean shouldGenerate) {

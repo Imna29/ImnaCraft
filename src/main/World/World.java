@@ -19,6 +19,8 @@ public class World {
     ChunkLoader loader;
     public static Material material;
 
+    private int viewDistance = 5;
+
     public World() {
         Vector3f spawnPosition = new Vector3f((float) 0, 70.0f, (float) 0);
         camera = new Camera(spawnPosition, new Vector3f(180.0f, 0f, 0.0f));
@@ -82,13 +84,11 @@ public class World {
         material = new Material("/textures/grass_block.png");
 
 
-        /*for (int x = -viewDistance; x < viewDistance; x++) {
+        for (int x = -viewDistance; x < viewDistance; x++) {
             for (int z = -viewDistance; z < viewDistance; z++) {
-                Chunk chunk = new Chunk(new Vector3i(x, 0, z));
-                chunkStorage.storeChunk(chunk);
-                activeChunks.add(chunk);
+                activeChunks.add(new Vector3i(x, 0, z));
             }
-        }*/
+        }
     }
 
     public void updateActiveChunks(){
@@ -96,7 +96,6 @@ public class World {
 
         activeChunks.clear();
 
-        int viewDistance = 5;
         for (int x = chunkPosition.x - viewDistance; x < chunkPosition.x + viewDistance; x++) {
             for(int z = chunkPosition.z - viewDistance; z < chunkPosition.z + viewDistance; z++){
                 activeChunks.add(new Vector3i(x, 0, z));
