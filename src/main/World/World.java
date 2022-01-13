@@ -45,10 +45,14 @@ public class World {
             if (chunk.getMesh().getVao() == 0) {
                 chunk.getMesh().create();
             }
-            renderer.renderChunk(chunk, camera);
+            renderer.addToRender(chunk);
         }
 
         loader.loadChunks(activeChunks);
+
+        renderer.renderChunk(camera);
+
+
 
     }
 

@@ -192,7 +192,8 @@ public class Mesh {
 
 
         GL46.glDeleteVertexArrays(vao);
-        World.material.destroy();
+
+
     }
 
     public List<Integer> getIndices() {
