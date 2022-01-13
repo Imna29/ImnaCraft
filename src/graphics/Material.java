@@ -1,19 +1,12 @@
 package graphics;
 
 import main.World.World;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.stb.STBImage;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
 public class Material {
-    private Texture texture;
     private int textureID;
     private final String path;
     public ByteBuffer buffer;
@@ -24,7 +17,7 @@ public class Material {
 
     public void create() {
         int[] width = new int[1], height = new int[1], nrChannels = new int[1];
-        buffer = STBImage.stbi_load("/home/imna/Documents/Projects/ImnaCraft/resources/textures/textures.png", width, height, nrChannels, 3);
+        buffer = STBImage.stbi_load("resources/textures/textures.png", width, height, nrChannels, 3);
         buffer.flip();
 
 
