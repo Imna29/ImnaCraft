@@ -2,7 +2,6 @@ package main.World;
 
 import engine.objects.GameObject;
 import graphics.Mesh;
-import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class Chunk extends GameObject {
@@ -26,9 +25,11 @@ public class Chunk extends GameObject {
 
     }
 
-    public void generateMesh(){
+    public Chunk generateMesh(){
         mesh = new Mesh();
         mesh.addToMesh(blockMap, position);
+
+        return this;
     }
 
 

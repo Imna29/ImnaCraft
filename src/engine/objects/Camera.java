@@ -70,10 +70,14 @@ public class Camera {
     }
 
     public Matrix4f getPosition() {
-        return cameraPos;
+        return this.cameraPos;
+    }
+
+    public Vector3f getPlayerPosition(){
+        return this.position;
     }
 
     public Vector3f getRotation() {
-        return rotation;
+        return this.rotation;
     }
 }

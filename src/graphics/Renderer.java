@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL46;
 public class Renderer {
     private Shader shader;
     private Window window;
-    private int textureID;
 
     public Renderer(Window window,Shader shader) {
         this.shader = shader;
@@ -24,7 +23,6 @@ public class Renderer {
 
         if (World.material.buffer == null){
             World.material.create();
-            System.out.println(textureID);
         }
 
         GL46.glBindVertexArray(object.getMesh().getVao());

@@ -27,8 +27,6 @@ public class Material {
         buffer = STBImage.stbi_load("/home/imna/Documents/Projects/ImnaCraft/resources/textures/textures.png", width, height, nrChannels, 3);
         buffer.flip();
 
-        System.out.println(width[0]);
-        System.out.println(height[0]);
 
         textureID = GL46.glGenTextures();
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);

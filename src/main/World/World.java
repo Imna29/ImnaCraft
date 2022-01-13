@@ -3,49 +3,53 @@ package main.World;
 import engine.objects.Camera;
 import graphics.Material;
 import graphics.Renderer;
+import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.lwjglx.Sys;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class World {
     public Camera camera;
-    public Vector3f spawn;
     public static final BlockType[] blockTypes = new BlockType[3];
-    public static final Chunk[][] chunks = new Chunk[128][128];
-    private final List<Chunk> activeChunks = new ArrayList<>();
+    public static final ChunkStorage chunkStorage = new ChunkStorage();
+    private final List<Vector3i> activeChunks = new CopyOnWriteArrayList<>();
     ChunkLoader loader;
-    Thread thread;
     public static Material material;
 
     public World() {
-        camera = new Camera(new Vector3f(8 * 8, 70.0f, 8 * 8f), new Vector3f(180.0f, 0f, 0.0f));
+        Vector3f spawnPosition = new Vector3f((float) 0, 70.0f, (float) 0);
+        camera = new Camera(spawnPosition, new Vector3f(180.0f, 0f, 0.0f));
         material = new Material("/textures/grass_block.png");
-        loader = new ChunkLoader();
-        thread = new Thread(loader);
+        loader = ChunkLoader.getInstance();
     }
 
 
     public void render(Renderer renderer) {
+        updateActiveChunks();
 
-        loader.loadChunks(activeChunks);
-        if(!thread.isAlive()){
-            if(thread.getState() != Thread.State.TERMINATED)
-                thread.start();
-        }
+        for (Vector3i chunkPosition : activeChunks) {
+            Chunk chunk = chunkStorage.getChunk(chunkPosition, false);
 
-        for (Chunk chunk : activeChunks) {
-            if(chunk.getMesh() == null || chunk.getMesh().generating)
+            if(chunk == null){
+                chunk = new Chunk(chunkPosition);
+                chunkStorage.storeChunk(chunk);
+            }
+
+            if (chunk.getMesh() == null || chunk.getMesh().generating) {
                 continue;
+            }
 
-            if(chunk.getMesh().getVao() == 0){
+            if (chunk.getMesh().getVao() == 0) {
                 chunk.getMesh().create();
             }
             renderer.renderChunk(chunk, camera);
         }
+
+        loader.loadChunks(activeChunks);
+
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -53,11 +57,12 @@ public class World {
         int chunkX = position.x / 16;
         int chunkZ = position.z / 16;
 
-        int localX = position.x - (chunkX * 16);
-        int localY = position.y;
-        int localZ = position.z - (chunkZ * 16);
+        int localX = Math.abs(position.x) % 16;
+        int localY = Math.abs(position.y);
+        int localZ = Math.abs(position.z) % 16;
 
-        Chunk chunk = chunks[chunkX][chunkZ];
+
+        Chunk chunk = chunkStorage.getChunk(chunkX, chunkZ, false);
 
         if (chunk != null) {
             try {
@@ -73,13 +78,29 @@ public class World {
         material = new Material("/textures/grass_block.png");
 
 
-        for (int x = 0; x < 5; x++) {
-            for (int z = 0; z < 5; z++) {
+        /*for (int x = -viewDistance; x < viewDistance; x++) {
+            for (int z = -viewDistance; z < viewDistance; z++) {
                 Chunk chunk = new Chunk(new Vector3i(x, 0, z));
-                chunks[x][z] = chunk;
+                chunkStorage.storeChunk(chunk);
                 activeChunks.add(chunk);
+            }
+        }*/
+    }
+
+    public void updateActiveChunks(){
+        Vector3i chunkPosition = getChunkPositionFromPlayerPosition(camera.getPlayerPosition());
+
+        activeChunks.clear();
+
+        int viewDistance = 5;
+        for (int x = chunkPosition.x - viewDistance; x < chunkPosition.x + viewDistance; x++) {
+            for(int z = chunkPosition.z - viewDistance; z < chunkPosition.z + viewDistance; z++){
+                activeChunks.add(new Vector3i(x, 0, z));
             }
         }
     }
 
+    public Vector3i getChunkPositionFromPlayerPosition(Vector3f playerPosition){
+        return new Vector3i((int)(Math.floor(playerPosition.x) / 16), 0, (int) (Math.floor(playerPosition.z) / 16));
+    }
 }
