@@ -11,6 +11,7 @@
 .mtj.tmp/
 
 out/
+lib/
 
 # Package Files #
 *.jar
