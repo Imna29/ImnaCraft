@@ -14,8 +14,7 @@ public class Window {
     private int height;
     private final String title;
     public static long window;
-    public int frames;
-    public long time;
+    private int frames;
     public Input input;
     private final Vector3f background = new Vector3f(1.0f, 0.0f, 0.0f);
     private GLFWWindowSizeCallback sizeCallback;
@@ -24,6 +23,11 @@ public class Window {
     private final int[] windowPosX = new int[1];
     private final int[] windowPosY = new int[1];
     private final Matrix4f projection;
+
+    //Time stuff
+    public static double deltaTime;
+    private double currentFrame;
+    private double lastFrame;
 
     public Window(int width, int height, String title) {
         this.width = width;
@@ -65,7 +69,9 @@ public class Window {
 
         GLFW.glfwSwapInterval(1);
 
-        time = System.currentTimeMillis();
+        deltaTime = GLFW.glfwGetTime();
+        currentFrame = deltaTime;
+        lastFrame = deltaTime;
 
     }
 
@@ -100,6 +106,11 @@ public class Window {
     }
 
     public void update() {
+        currentFrame = GLFW.glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+
         if (isResized) {
             if (isFullScreen) {
                 GLFWVidMode vidMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());

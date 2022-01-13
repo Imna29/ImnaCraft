@@ -8,10 +8,11 @@ import org.lwjgl.glfw.GLFW;
 
 public class Camera {
     private Vector3f position, rotation;
-    private float moveSpeed = 0.2f;
+    private float moveSpeed = 0f;
+    private float defaultMoveSpeed = 10f;
     private double oldMouseX = 0;
     private double oldMouseY = 0;
-    private final float rotationSpeed = 0.05f;
+    private final float rotationSpeed = 4f;
     private Matrix4f cameraPos;
     private long time;
     private int frames = 0;
@@ -23,9 +24,9 @@ public class Camera {
 
     public void update() {
         if(Input.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL)){
-            moveSpeed = 0.5f;
+            moveSpeed = defaultMoveSpeed * 2;
         }else{
-            moveSpeed = 0.2f;
+            moveSpeed = defaultMoveSpeed;
         }
 
         double newMouseX = Input.getMouseX();
@@ -35,21 +36,23 @@ public class Camera {
         cameraPos = cameraPos.rotateLocalY(Math.toRadians(rotation.x));
         cameraPos = cameraPos.rotateLocalX(Math.toRadians(rotation.y));
 
-        float x = Math.cos(Math.toRadians(rotation.x)) * moveSpeed;
-        float z = Math.sin(Math.toRadians(rotation.x)) * moveSpeed;
+        float x = (float) (Math.cos(Math.toRadians(rotation.x)) * moveSpeed * Window.deltaTime);
+        float z = (float) (Math.sin(Math.toRadians(rotation.x)) * moveSpeed * Window.deltaTime);
+        float y = (float) (moveSpeed * Window.deltaTime);
 
 
         if (Input.isKeyDown(GLFW.GLFW_KEY_A)) position = new Vector3f(-x, 0, -z).add(position);
         if (Input.isKeyDown(GLFW.GLFW_KEY_D)) position = new Vector3f(x, 0, z).add(position);
         if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = new Vector3f(z, 0, -x).add(position);
         if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = new Vector3f(-z, 0, x).add(position);
-        if (Input.isKeyDown(GLFW.GLFW_KEY_SPACE)) position = new Vector3f(0, moveSpeed, 0).add(position);
-        if (Input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) position = new Vector3f(0, -moveSpeed, 0).add(position);
+        if (Input.isKeyDown(GLFW.GLFW_KEY_SPACE)) position = new Vector3f(0, y, 0).add(position);
+        if (Input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT)) position = new Vector3f(0, -y, 0).add(position);
 
         float dx = (float) (newMouseX - oldMouseX);
         float dy = (float) (newMouseY - oldMouseY);
 
-        rotation = rotation.add(dx * rotationSpeed, dy * rotationSpeed, 0);
+        rotation.add((float) (dx * rotationSpeed  * Window.deltaTime), (float) (dy * rotationSpeed *  Window.deltaTime), 0);
+//        rotation.mul((float));
 
         if(rotation.y >= 90){
             rotation.y = 90;
