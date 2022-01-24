@@ -3,6 +3,7 @@ package graphics;
 import engine.io.Window;
 import engine.objects.Camera;
 import engine.objects.GameObject;
+import engine.objects.Player;
 import main.World.World;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -11,16 +12,14 @@ import org.lwjgl.opengl.GL46;
 import java.util.HashMap;
 
 public class Renderer {
-    private Shader shader;
-    private Window window;
-    private final HashMap<Mesh, GameObject> cache;
+    private final Shader shader;
+    private final Window window;
     private final HashMap<Mesh, GameObject> toRender;
 
     public Renderer(Window window,Shader shader) {
         this.shader = shader;
         this.window = window;
         this.toRender = new HashMap<>();
-        this.cache = new HashMap<>();
     }
 
     public void addToRender(GameObject object){
@@ -28,7 +27,7 @@ public class Renderer {
     }
 
 
-    public void renderChunk(Camera camera) {
+    public void renderChunk(Player player) {
 
         if (World.material.buffer == null){
             World.material.create();
@@ -52,7 +51,7 @@ public class Renderer {
             shader.setUniform("model", translation);
 
 
-            shader.setUniform("view", camera.getPosition());
+            shader.setUniform("view", player.camera.cameraPos);
 
             shader.setUniform("projection", window.getProjection());
             GL46.glDrawElements(GL46.GL_TRIANGLES, object.getMesh().getIndices().size(), GL46.GL_UNSIGNED_INT, 0);

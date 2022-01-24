@@ -75,7 +75,7 @@ public class Main implements Runnable {
 
     private void update() {
         window.update();
-        world.camera.update();
+        world.player.update();
     }
 
     private void render() {

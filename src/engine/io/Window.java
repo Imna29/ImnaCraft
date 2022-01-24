@@ -22,18 +22,19 @@ public class Window {
     private boolean isFullScreen = false;
     private final int[] windowPosX = new int[1];
     private final int[] windowPosY = new int[1];
-    private final Matrix4f projection;
+    public static Matrix4f projection = new Matrix4f().perspective(Math.toRadians(70), (float) 16 / (float) 9, 0.05f, 1000.0f);
 
     //Time stuff
     public static double deltaTime;
-    private double currentFrame;
-    private double lastFrame;
+    public static double currentFrame;
+    public static double lastFrame;
 
     public Window(int width, int height, String title) {
         this.width = width;
         this.height = height;
         this.title = title;
         projection = new Matrix4f().perspective(Math.toRadians(70), (float) width / (float) height, 0.1f, 1000.0f);
+        ;
     }
 
     public void createWindow() {
@@ -152,7 +153,7 @@ public class Window {
         GLFW.glfwTerminate();
     }
 
-    public void setMouseLock(boolean lock){
+    public void setMouseLock(boolean lock) {
         GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, lock ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
     }
 

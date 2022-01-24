@@ -1,6 +1,5 @@
 package graphics;
 
-import main.World.BlockType;
 import main.World.World;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -66,15 +65,19 @@ public class Mesh {
                         boolean shouldRender = true;
 
                         try {
-                            if (World.blockTypes[blockMap[x + faceCheck[side].x][y + faceCheck[side].y][z + faceCheck[side].z]].isSolid()) {
+                            if (World.blockTypes[blockMap[x + faceCheck[side].x][y + faceCheck[side].y][z + faceCheck[side].z]] != null && World.blockTypes[blockMap[x + faceCheck[side].x][y + faceCheck[side].y][z + faceCheck[side].z]].isSolid()) {
                                 shouldRender = false;
                             }
                         } catch (IndexOutOfBoundsException e) {
                             Vector3i toCheck = new Vector3i(x + (chunkPosition.x * 16), y, z + (chunkPosition.z * 16)).add(faceCheck[side]);
-                            shouldRender = !World.CheckIfBlockIsSolid(toCheck);
+                            shouldRender = !World.checkIfBlockIsSolid(toCheck);
                         }
 
                         if (!shouldRender) continue;
+
+                        if(World.blockTypes[blockMap[x][y][z]] == null){
+                            continue;
+                        }
 
                         positionData.add(x + verts[tris[side][0]].x);
                         positionData.add(y + verts[tris[side][0]].y);
@@ -101,6 +104,7 @@ public class Mesh {
                         indices.add(indicesCount + 3);
 
                         indicesCount += 4;
+
 
                         int textureId = World.blockTypes[blockMap[x][y][z]].GetTextureID(side);
                         int textureX = textureId / 4;

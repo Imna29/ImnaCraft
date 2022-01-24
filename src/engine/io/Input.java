@@ -5,6 +5,8 @@ import org.lwjgl.glfw.*;
 public class Input {
     private static final boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];
     private static final boolean[] mouseButtons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
+    private static final boolean[] mouseButtonsOnce = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
+    private static double frameCalled = 0;
     private static double mouseX, mouseY;
     private static double scrollX, scrollY;
 
@@ -34,6 +36,11 @@ public class Input {
             @Override
             public void invoke(long window, int button, int action, int mods) {
                 mouseButtons[button] = (action != GLFW.GLFW_RELEASE);
+
+                if (frameCalled != Window.currentFrame) {
+                    mouseButtonsOnce[button] = (action == GLFW.GLFW_PRESS);
+                    frameCalled = Window.currentFrame;
+                }
             }
         };
 
@@ -53,6 +60,11 @@ public class Input {
     public static boolean isButtonDown(int button) {
         return mouseButtons[button];
     }
+
+    public static boolean isButtonDownOnce(int button) {
+        return mouseButtonsOnce[button];
+    }
+
 
     public void destroy() {
         keyboardCallback.free();

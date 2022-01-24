@@ -25,11 +25,10 @@ public class Chunk extends GameObject {
 
     }
 
-    public Chunk generateMesh(){
+    public void generateMesh(){
         mesh = new Mesh();
         mesh.addToMesh(blockMap, position);
 
-        return this;
     }
 
 

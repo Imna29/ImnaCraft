@@ -8,7 +8,7 @@ public class GameObject {
     public Vector3i position;
     public Vector3f rotation;
     public Vector3f scale;
-    protected Mesh mesh;
+    public Mesh mesh;
 
 
     public GameObject(){
